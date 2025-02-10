@@ -1,5 +1,6 @@
 const { getBucketStats, listBuckets } = require('./api.js');
 const { log } = require('./util.js');
+const { ipcMain } = require('electron');
 
 class Dashboard {
   constructor() {
@@ -49,9 +50,8 @@ class Dashboard {
   }
 
   emitUpdate(bucketName) {
-    // Qui puoi implementare l'emissione di eventi per aggiornare l'UI
     const stats = this.getBucketStats(bucketName);
-    window.electron.send('bucket-stats-updated', {
+    ipcMain.emit('bucket-stats-updated', {
       bucketName,
       stats
     });

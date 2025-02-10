@@ -34,7 +34,15 @@ ipcMain.handle('get-bucket-stats', async (_, bucketName) => {
 
 ipcMain.handle('get-all-stats', () => {
   return dashboard.getAllStats();
-}); 
+});
+
+// Aggiungiamo un listener per l'evento bucket-stats-updated
+ipcMain.on('bucket-stats-updated', (event, data) => {
+  // Invia l'aggiornamento a tutte le finestre
+  BrowserWindow.getAllWindows().forEach(window => {
+    window.webContents.send('bucket-stats-updated', data);
+  });
+});
 
 app.whenReady().then(() => {
   createWindow()
