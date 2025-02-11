@@ -1,6 +1,7 @@
 const { app, BrowserWindow, ipcMain } = require('electron')
 const path = require('path')
 const  Dashboard = require('./src/dashboard.js');
+const { listBuckets, getBucketStats } = require('./src/api.js');
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -22,6 +23,8 @@ const createWindow = () => {
 
 
 const dashboard = new Dashboard();
+
+// Aggiungi questi handler
 ipcMain.handle('ping', () => 'pong')
 
 ipcMain.handle('start-monitoring', async () => {
@@ -29,10 +32,24 @@ ipcMain.handle('start-monitoring', async () => {
 });
 
 ipcMain.handle('get-bucket-stats', async (_, bucketName) => {
-  return dashboard.getBucketStats(bucketName);
+  const stats = await getBucketStats(bucketName);  // Ottieni stats fresche
+  dashboard.stats.set(bucketName, {
+    ...stats,
+    lastUpdate: new Date()
+  });
+  return stats;
 });
 
-ipcMain.handle('get-all-stats', () => {
+ipcMain.handle('get-all-stats', async () => {
+  // Aggiorna tutte le statistiche prima di restituirle
+  const buckets = await listBuckets();
+  for (const bucket of buckets) {
+    const stats = await getBucketStats(bucket.Name);
+    dashboard.stats.set(bucket.Name, {
+      ...stats,
+      lastUpdate: new Date()
+    });
+  }
   return dashboard.getAllStats();
 });
 

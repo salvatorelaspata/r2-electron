@@ -145,6 +145,7 @@ const handleBucketClick = async (bucketName) => {
     
     try {
         currentBucket = bucketName;
+        // Forza un aggiornamento fresco delle statistiche
         const stats = await window.api.getBucketStats(bucketName);
         
         if (!stats) {
@@ -161,13 +162,43 @@ const handleBucketClick = async (bucketName) => {
     }
 };
 
-// Aggiorna la funzione initialize con gestione errori
+// Aggiungi questo dopo la definizione delle altre funzioni
+const setupBucketUpdates = () => {
+    window.api.onBucketStatsUpdated((event, { bucketName, stats }) => {
+        if (!stats) return;
+        
+        // Aggiorna la card del bucket
+        const bucketCard = document.querySelector(`.bucket-card[data-bucket="${bucketName}"]`);
+        if (bucketCard) {
+            const statsHtml = `
+                <h3>${bucketName}</h3>
+                <div class="bucket-stats">
+                    <p>Oggetti totali: ${stats.totalObjects}</p>
+                    <p>Dimensione totale: ${stats.humanReadableSize}</p>
+                </div>
+            `;
+            bucketCard.innerHTML = statsHtml;
+        }
+
+        // Se questo è il bucket attualmente selezionato, aggiorna anche i dettagli
+        if (currentBucket === bucketName) {
+            updateBucketDetails(bucketName, stats);
+        }
+
+        updateLastUpdate();
+    });
+};
+
+// Modifica la funzione initialize per includere il setup degli aggiornamenti
 const initialize = async () => {
     UI.showLoading();
     
     try {
         await window.api.startMonitoring();
         await updateDashboard();
+        
+        // Aggiungi il setup degli aggiornamenti
+        setupBucketUpdates();
         
         // Aggiorna la dashboard ogni 30 secondi
         setInterval(async () => {

@@ -51,10 +51,15 @@ class Dashboard {
 
   emitUpdate(bucketName) {
     const stats = this.getBucketStats(bucketName);
-    ipcMain.emit('bucket-stats-updated', {
-      bucketName,
-      stats
-    });
+    if (stats) {
+      const { BrowserWindow } = require('electron');
+      BrowserWindow.getAllWindows().forEach(window => {
+        window.webContents.send('bucket-stats-updated', {
+          bucketName,
+          stats
+        });
+      });
+    }
   }
 } 
 

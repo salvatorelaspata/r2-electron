@@ -11,5 +11,6 @@ contextBridge.exposeInMainWorld('versions', {
 contextBridge.exposeInMainWorld('api', {
     startMonitoring: () => ipcRenderer.invoke('start-monitoring'),
     getBucketStats: (bucketName) => ipcRenderer.invoke('get-bucket-stats', bucketName),
-    getAllStats: () => ipcRenderer.invoke('get-all-stats')
+    getAllStats: () => ipcRenderer.invoke('get-all-stats'),
+    onBucketStatsUpdated: (callback) => ipcRenderer.on('bucket-stats-updated', callback)
 })

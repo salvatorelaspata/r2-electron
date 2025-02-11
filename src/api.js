@@ -64,9 +64,12 @@ const deleteEmptyBucket = async (name) => {
   const objects = await listObjects(bucketName);
   if (!objects) return null;
   
+  const totalSize = objects.reduce((acc, obj) => acc + obj.Size, 0);
+  
   return {
     totalObjects: objects.length,
-    totalSize: objects.reduce((acc, obj) => acc + obj.Size, 0),
+    totalSize: totalSize,
+    humanReadableSize: sizeToHumanReadable(totalSize),
     objects: objects.map(obj => ({
       key: obj.Key,
       size: obj.Size,
