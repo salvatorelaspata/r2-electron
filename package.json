@@ -1,8 +1,12 @@
 {
   "name": "r2-toolkit",
   "version": "0.0.1",
-  "description": "",
+  "description": "R2 Toolkit Application",
   "main": "main.js",
+  "author": {
+    "name": "Salvatore La Spata",
+    "email": "salvatore.la.spata@gmail.com"
+  },
   "scripts": {
     "start": "electron .",
     "build": "electron-builder --dir",

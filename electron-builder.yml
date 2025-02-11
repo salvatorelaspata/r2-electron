@@ -30,6 +30,7 @@ linux:
     - deb
   icon: build/icon.png
   category: Development
+  maintainer: "Salvatore La Spata <salvatore.la.spata@gmail.com>"
 
 nsis:
   oneClick: false
