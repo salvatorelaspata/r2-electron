@@ -16,11 +16,15 @@ files:
 asar: true
 
 win:
-  target: nsis
+  target: 
+    - nsis
+    - zip
   icon: build/icon.ico
 
 mac:
-  target: dmg
+  target: 
+    - dmg
+    - zip
   icon: build/icon.icns
   category: public.app-category.developer-tools
   publish:
@@ -31,6 +35,7 @@ linux:
   target:
     - AppImage
     - deb
+    - rpm
   icon: build/icon.png
   category: Development
   maintainer: "Salvatore La Spata <salvatore.la.spata@gmail.com>"
