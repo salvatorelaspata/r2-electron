@@ -4,7 +4,9 @@
   "description": "",
   "main": "main.js",
   "scripts": {
-    "start": "electron ."
+    "start": "electron .",
+    "build": "electron-builder --dir",
+    "dist": "electron-builder"
   },
   "keywords": [],
   "license": "ISC",
@@ -15,6 +17,7 @@
     "dotenv": "^16.4.5"
   },
   "devDependencies": {
-    "electron": "^34.1.1"
+    "electron": "^34.1.1",
+    "electron-builder": "^25.1.8"
   }
 }
