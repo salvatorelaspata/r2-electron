@@ -23,7 +23,9 @@ mac:
   target: dmg
   icon: build/icon.icns
   category: public.app-category.developer-tools
-  publish: none
+  publish:
+    provider: "generic"
+    url: "https://example.com/auto-updates"
 
 linux:
   target:
