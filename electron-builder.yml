@@ -1,5 +1,5 @@
-appId: com.tuaapp.id
-productName: Nome App
+appId: com.r2-toolkit
+productName: R2 Toolkit
 
 directories:
   output: dist
@@ -36,6 +36,7 @@ linux:
     - AppImage
     - deb
     - rpm
+    - snap
   icon: build/icon.png
   category: Development
   maintainer: "Salvatore La Spata <salvatore.la.spata@gmail.com>"

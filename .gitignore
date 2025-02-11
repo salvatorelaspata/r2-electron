@@ -1,3 +1,5 @@
 # create a .gitignore file for node js electron project
 node_modules
 .env
+dist
+build
