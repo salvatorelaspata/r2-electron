@@ -11,29 +11,29 @@
       content="default-src 'self'; script-src 'self'"
     />
     <title>R2 Dashboard</title>
-    <link href="styles.css" rel="stylesheet">
+    <link href="styles.css" rel="stylesheet" />
   </head>
   <body>
     <div id="loading-overlay" class="loading-overlay hidden">
-        <div class="spinner"></div>
+      <div class="spinner"></div>
     </div>
-    
+
     <div id="toast-container"></div>
-    
+
     <div class="container">
       <header>
         <h1>R2 Dashboard</h1>
         <div id="last-update"></div>
       </header>
 
-      <p id="info"/>
-      
+      <p id="info" />
+
       <div class="dashboard">
         <div class="buckets-overview">
           <h2>Buckets Overview</h2>
           <div id="buckets-list" class="buckets-grid"></div>
         </div>
-        
+
         <div class="bucket-details hidden" id="bucket-details">
           <h2>Bucket Details: <span id="selected-bucket"></span></h2>
           <div class="objects-list">
@@ -43,6 +43,7 @@
                   <th>Nome File</th>
                   <th>Dimensione</th>
                   <th>Ultima Modifica</th>
+                  <th>Azioni</th>
                 </tr>
               </thead>
               <tbody id="objects-table"></tbody>
