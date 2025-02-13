@@ -1,7 +1,7 @@
 window.addEventListener("DOMContentLoaded", async () => {
   const information = document.getElementById("info");
   try {
-    information.innerText = `Questa app sta usando Chrome (v${window.versions.chrome()}), Node.js (v${window.versions.node()}), e Electron (v${window.versions.electron()})`;
+    information.innerText = `Chrome (v${window.versions.chrome()}), Node.js (v${window.versions.node()}), e Electron (v${window.versions.electron()})`;
 
     const response = await window.versions.ping();
     console.log(response);
@@ -84,6 +84,10 @@ const updateBucketDetails = (bucketName, stats) => {
       handleDownloadObject(bucketName, objectKey);
     });
   });
+
+  // Add event listener for upload button
+  const uploadButton = document.getElementById("upload-button");
+  uploadButton.onclick = () => handleUploadObject(bucketName);
 };
 
 // Gestione loading e errori
@@ -241,6 +245,33 @@ const handleDownloadObject = async (bucketName, objectKey) => {
   } finally {
     UI.hideLoading();
   }
+};
+
+const handleUploadObject = async (bucketName) => {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.onchange = async (event) => {
+    const file = event.target.files[0];
+    if (!file) return;
+
+    UI.showLoading();
+
+    try {
+      const arrayBuffer = await file.arrayBuffer();
+      await window.api.putObject(bucketName, file.name, arrayBuffer);
+      UI.showToast(`Oggetto ${file.name} caricato con successo`, "success");
+      await handleBucketClick(bucketName); // Refresh bucket details
+    } catch (error) {
+      console.error("Errore durante il caricamento dell'oggetto:", error);
+      UI.showError(
+        `Errore durante il caricamento dell'oggetto: ${error.message}`
+      );
+      UI.showToast(`Errore durante il caricamento dell'oggetto ${file.name}`);
+    } finally {
+      UI.hideLoading();
+    }
+  };
+  fileInput.click();
 };
 
 // Aggiungi questo dopo la definizione delle altre funzioni

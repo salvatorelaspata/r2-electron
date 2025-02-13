@@ -19,4 +19,6 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("delete-object", bucketName, objectKey),
   getSignedUrl: (bucketName, objectKey) =>
     ipcRenderer.invoke("get-signed-url", bucketName, objectKey),
+  putObject: (bucketName, objectKey, body) =>
+    ipcRenderer.invoke("put-object", bucketName, objectKey, body),
 });

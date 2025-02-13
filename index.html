@@ -12,25 +12,6 @@
     />
     <title>R2 Dashboard</title>
     <link href="styles.css" rel="stylesheet" />
-    <style>
-      .action-button {
-        margin-right: 5px;
-        padding: 5px 10px;
-        border: none;
-        border-radius: 3px;
-        cursor: pointer;
-      }
-
-      .delete-button {
-        background-color: #ff4d4d;
-        color: white;
-      }
-
-      .download-button {
-        background-color: #4caf50;
-        color: white;
-      }
-    </style>
   </head>
   <body>
     <div id="loading-overlay" class="loading-overlay hidden">
@@ -42,10 +23,11 @@
     <div class="container">
       <header>
         <h1>R2 Dashboard</h1>
-        <div id="last-update"></div>
+        <div class="info-panel">
+          <div id="info" class="last-update"></div>
+          <div id="last-update" class="last-update"></div>
+        </div>
       </header>
-
-      <p id="info" />
 
       <div class="dashboard">
         <div class="buckets-overview">
@@ -55,6 +37,9 @@
 
         <div class="bucket-details hidden" id="bucket-details">
           <h2>Bucket Details: <span id="selected-bucket"></span></h2>
+          <button id="upload-button" class="action-button upload-button">
+            Carica
+          </button>
           <div class="objects-list">
             <table>
               <thead>

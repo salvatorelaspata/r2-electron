@@ -6,6 +6,7 @@ const {
   getBucketStats,
   deleteObject,
   getSignedUrl,
+  putObject,
 } = require("./src/api.js");
 
 const createWindow = () => {
@@ -65,6 +66,11 @@ ipcMain.handle("delete-object", async (_, bucketName, objectKey) => {
 ipcMain.handle("get-signed-url", async (_, bucketName, objectKey) => {
   const signedUrl = await getSignedUrl(bucketName, objectKey);
   return signedUrl;
+});
+
+ipcMain.handle("put-object", async (_, bucketName, objectKey, body) => {
+  const response = await putObject(bucketName, objectKey, body);
+  return response;
 });
 
 // Aggiungiamo un listener per l'evento bucket-stats-updated
