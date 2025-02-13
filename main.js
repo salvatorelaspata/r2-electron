@@ -1,7 +1,12 @@
 const { app, BrowserWindow, ipcMain } = require("electron");
 const path = require("path");
 const Dashboard = require("./src/dashboard.js");
-const { listBuckets, getBucketStats, deleteObject } = require("./src/api.js");
+const {
+  listBuckets,
+  getBucketStats,
+  deleteObject,
+  getSignedUrl,
+} = require("./src/api.js");
 
 const createWindow = () => {
   const win = new BrowserWindow({
@@ -55,6 +60,11 @@ ipcMain.handle("get-all-stats", async () => {
 ipcMain.handle("delete-object", async (_, bucketName, objectKey) => {
   const response = await deleteObject(bucketName, objectKey);
   return response;
+});
+
+ipcMain.handle("get-signed-url", async (_, bucketName, objectKey) => {
+  const signedUrl = await getSignedUrl(bucketName, objectKey);
+  return signedUrl;
 });
 
 // Aggiungiamo un listener per l'evento bucket-stats-updated

@@ -17,4 +17,6 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.on("bucket-stats-updated", callback),
   deleteObject: (bucketName, objectKey) =>
     ipcRenderer.invoke("delete-object", bucketName, objectKey),
+  getSignedUrl: (bucketName, objectKey) =>
+    ipcRenderer.invoke("get-signed-url", bucketName, objectKey),
 });

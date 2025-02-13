@@ -46,9 +46,14 @@ const renderObjectsList = (objects) => {
             <td>${obj.key}</td>
             <td>${obj.humanReadableSize}</td>
             <td>${formatDate(obj.lastModified)}</td>
-            <td><button class="delete-button" data-key="${
-              obj.key
-            }">Cancella</button></td>
+            <td>
+                <button class="action-button delete-button" data-key="${
+                  obj.key
+                }">Cancella</button>
+                <button class="action-button download-button" data-key="${
+                  obj.key
+                }">Scarica</button>
+            </td>
         </tr>
     `
     )
@@ -65,11 +70,18 @@ const updateBucketDetails = (bucketName, stats) => {
   objectsTable.innerHTML = renderObjectsList(stats.objects);
   detailsSection.classList.remove("hidden");
 
-  // Add event listener for delete buttons
+  // Add event listeners for buttons
   objectsTable.querySelectorAll(".delete-button").forEach((button) => {
     button.addEventListener("click", (event) => {
       const objectKey = event.target.getAttribute("data-key");
       handleDeleteObject(bucketName, objectKey);
+    });
+  });
+
+  objectsTable.querySelectorAll(".download-button").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const objectKey = event.target.getAttribute("data-key");
+      handleDownloadObject(bucketName, objectKey);
     });
   });
 };
@@ -205,6 +217,27 @@ const handleDeleteObject = async (bucketName, objectKey) => {
       `Errore durante la cancellazione dell'oggetto: ${error.message}`
     );
     UI.showToast(`Errore durante la cancellazione dell'oggetto ${objectKey}`);
+  } finally {
+    UI.hideLoading();
+  }
+};
+
+const handleDownloadObject = async (bucketName, objectKey) => {
+  UI.showLoading();
+
+  try {
+    const signedUrl = await window.api.getSignedUrl(bucketName, objectKey);
+    const link = document.createElement("a");
+    link.href = signedUrl;
+    link.download = objectKey;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    UI.showToast(`Oggetto ${objectKey} scaricato con successo`, "success");
+  } catch (error) {
+    console.error("Errore durante il download dell'oggetto:", error);
+    UI.showError(`Errore durante il download dell'oggetto: ${error.message}`);
+    UI.showToast(`Errore durante il download dell'oggetto ${objectKey}`);
   } finally {
     UI.hideLoading();
   }
