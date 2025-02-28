@@ -21,4 +21,6 @@ contextBridge.exposeInMainWorld("api", {
     ipcRenderer.invoke("get-signed-url", bucketName, objectKey),
   putObject: (bucketName, objectKey, body) =>
     ipcRenderer.invoke("put-object", bucketName, objectKey, body),
+  createFolder: (bucketName, folderName) =>
+    ipcRenderer.invoke("create-folder", bucketName, folderName),
 });

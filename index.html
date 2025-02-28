@@ -1,61 +1,64 @@
 <!DOCTYPE html>
 <html>
-  <head>
-    <meta charset="UTF-8" />
-    <meta
-      http-equiv="Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <meta
-      http-equiv="X-Content-Security-Policy"
-      content="default-src 'self'; script-src 'self'"
-    />
-    <title>R2 Dashboard</title>
-    <link href="styles.css" rel="stylesheet" />
-  </head>
-  <body>
-    <div id="loading-overlay" class="loading-overlay hidden">
-      <div class="spinner"></div>
-    </div>
 
-    <div id="toast-container"></div>
+<head>
+  <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <meta http-equiv="X-Content-Security-Policy" content="default-src 'self'; script-src 'self'" />
+  <title>R2 Dashboard</title>
+  <link href="styles.css" rel="stylesheet" />
+</head>
 
-    <div class="container">
-      <header>
-        <h1>R2 Dashboard</h1>
-        <div class="info-panel">
-          <div id="info" class="last-update"></div>
-          <div id="last-update" class="last-update"></div>
-        </div>
-      </header>
+<body>
+  <div id="loading-overlay" class="loading-overlay hidden">
+    <div class="spinner"></div>
+  </div>
 
-      <div class="dashboard">
-        <div class="buckets-overview">
-          <h2>Buckets Overview</h2>
-          <div id="buckets-list" class="buckets-grid"></div>
-        </div>
+  <div id="toast-container"></div>
 
-        <div class="bucket-details hidden" id="bucket-details">
-          <h2>Bucket Details: <span id="selected-bucket"></span></h2>
-          <button id="upload-button" class="action-button upload-button">
-            Carica
-          </button>
-          <div class="objects-list">
-            <table>
-              <thead>
-                <tr>
-                  <th>Nome File</th>
-                  <th>Dimensione</th>
-                  <th>Ultima Modifica</th>
-                  <th>Azioni</th>
-                </tr>
-              </thead>
-              <tbody id="objects-table"></tbody>
-            </table>
-          </div>
+  <div class="container">
+    <header>
+      <h1>R2 Dashboard</h1>
+      <div class="info-panel">
+        <div id="info" class="last-update"></div>
+        <div id="last-update" class="last-update"></div>
+      </div>
+    </header>
+
+    <div class="dashboard">
+      <div class="buckets-overview">
+        <h2>Buckets Overview</h2>
+        <div id="buckets-list" class="buckets-grid"></div>
+      </div>
+
+      <div class="bucket-details hidden" id="bucket-details">
+        <h2>Bucket Details: <span id="selected-bucket"></span></h2>
+        <button id="upload-button" class="action-button upload-button">
+          Carica
+        </button>
+        <button id="create-folder-button" class="action-button create-folder-button">
+          Crea Cartella
+        </button>
+
+        <input id="folder-name" type="text" placeholder="Nome Cartella (opzionale)" />
+
+        <div class="objects-list">
+          <table>
+            <thead>
+              <tr>
+                <th>Nome File</th>
+                <th>Dimensione</th>
+                <th>Ultima Modifica</th>
+                <th>Azioni</th>
+              </tr>
+            </thead>
+            <tbody id="objects-table"></tbody>
+          </table>
         </div>
       </div>
     </div>
-    <script src="renderer.js"></script>
-  </body>
+  </div>
+  <script src="renderer.js" type="module"></script>
+</body>
+
 </html>

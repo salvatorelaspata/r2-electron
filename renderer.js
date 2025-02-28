@@ -39,6 +39,13 @@ const renderBucketCard = (bucketName, stats) => {
 
 // Renderizza la lista degli oggetti in un bucket
 const renderObjectsList = (objects) => {
+  // Sort objects: directories first, then files
+  objects.sort((a, b) => {
+    if (a.size === 0 && b.size !== 0) return -1;
+    if (a.size !== 0 && b.size === 0) return 1;
+    return a.key.localeCompare(b.key);
+  });
+
   return objects
     .map(
       (obj) => `
@@ -47,12 +54,11 @@ const renderObjectsList = (objects) => {
             <td>${obj.humanReadableSize}</td>
             <td>${formatDate(obj.lastModified)}</td>
             <td>
-                <button class="action-button delete-button" data-key="${
-                  obj.key
-                }">Cancella</button>
-                <button class="action-button download-button" data-key="${
-                  obj.key
-                }">Scarica</button>
+                <button class="action-button delete-button" data-key="${obj.key
+        }">Cancella</button>
+                <button class="action-button download-button" data-key="${obj.key
+        }">Scarica</button>
+                ${obj.size === 0 ? `<button class="action-button upload-to-folder-button" data-key="${obj.key}">Carica qui</button>` : ''}
             </td>
         </tr>
     `
@@ -67,7 +73,7 @@ const updateBucketDetails = (bucketName, stats) => {
   const objectsTable = document.getElementById("objects-table");
 
   selectedBucket.textContent = bucketName;
-  objectsTable.innerHTML = renderObjectsList(stats.objects);
+  objectsTable.innerHTML = stats.objects.length > 0 ? renderObjectsList(stats.objects) : '<tr><td colspan="4">Nessun oggetto presente</td></tr>';
   detailsSection.classList.remove("hidden");
 
   // Add event listeners for buttons
@@ -85,9 +91,23 @@ const updateBucketDetails = (bucketName, stats) => {
     });
   });
 
+  objectsTable.querySelectorAll(".upload-to-folder-button").forEach((button) => {
+    button.addEventListener("click", (event) => {
+      const folderName = event.target.getAttribute("data-key");
+      handleUploadObject(bucketName, folderName);
+    });
+  });
+
   // Add event listener for upload button
   const uploadButton = document.getElementById("upload-button");
-  uploadButton.onclick = () => handleUploadObject(bucketName);
+  uploadButton.onclick = () => {
+    const folderName = document.getElementById("folder-name").value;
+    handleUploadObject(bucketName, folderName);
+  };
+
+  // Add event listener for create folder button
+  const createFolderButton = document.getElementById("create-folder-button");
+  createFolderButton.onclick = () => handleCreateFolder(bucketName);
 };
 
 // Gestione loading e errori
@@ -185,10 +205,11 @@ const handleBucketClick = async (bucketName) => {
     const stats = await window.api.getBucketStats(bucketName);
 
     if (!stats) {
-      throw new Error(`Nessuna statistica trovata per il bucket ${bucketName}`);
+      // Se il bucket è vuoto, crea un oggetto stats vuoto
+      updateBucketDetails(bucketName, { objects: [], totalObjects: 0, totalSize: 0, humanReadableSize: '0 B' });
+    } else {
+      updateBucketDetails(bucketName, stats);
     }
-
-    updateBucketDetails(bucketName, stats);
   } catch (error) {
     console.error(
       "Errore durante il caricamento dei dettagli del bucket:",
@@ -247,7 +268,7 @@ const handleDownloadObject = async (bucketName, objectKey) => {
   }
 };
 
-const handleUploadObject = async (bucketName) => {
+const handleUploadObject = async (bucketName, folderName = "") => {
   const fileInput = document.createElement("input");
   fileInput.type = "file";
   fileInput.onchange = async (event) => {
@@ -258,7 +279,8 @@ const handleUploadObject = async (bucketName) => {
 
     try {
       const arrayBuffer = await file.arrayBuffer();
-      await window.api.putObject(bucketName, file.name, arrayBuffer);
+      const objectKey = folderName ? `${folderName}/${file.name}` : file.name;
+      await window.api.putObject(bucketName, objectKey, arrayBuffer);
       UI.showToast(`Oggetto ${file.name} caricato con successo`, "success");
       await handleBucketClick(bucketName); // Refresh bucket details
     } catch (error) {
@@ -272,6 +294,26 @@ const handleUploadObject = async (bucketName) => {
     }
   };
   fileInput.click();
+};
+
+const handleCreateFolder = async (bucketName) => {
+  const folderName = document.getElementById("folder-name").value;
+  if (!folderName) return;
+
+  UI.showLoading();
+
+  try {
+    console.log("Creazione della cartella:", folderName);
+    await window.api.createFolder(bucketName, folderName);
+    UI.showToast(`Cartella ${folderName} creata con successo`, "success");
+    await handleBucketClick(bucketName); // Refresh bucket details
+  } catch (error) {
+    console.error("Errore durante la creazione della cartella:", error);
+    UI.showError(`Errore durante la creazione della cartella: ${error.message}`);
+    UI.showToast(`Errore durante la creazione della cartella ${folderName}`);
+  } finally {
+    UI.hideLoading();
+  }
 };
 
 // Aggiungi questo dopo la definizione delle altre funzioni

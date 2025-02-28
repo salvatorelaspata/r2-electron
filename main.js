@@ -7,6 +7,7 @@ const {
   deleteObject,
   getSignedUrl,
   putObject,
+  createFolder // Import the new function
 } = require("./src/api.js");
 
 const createWindow = () => {
@@ -70,6 +71,11 @@ ipcMain.handle("get-signed-url", async (_, bucketName, objectKey) => {
 
 ipcMain.handle("put-object", async (_, bucketName, objectKey, body) => {
   const response = await putObject(bucketName, objectKey, body);
+  return response;
+});
+
+ipcMain.handle("create-folder", async (_, bucketName, folderName) => {
+  const response = await createFolder(bucketName, folderName);
   return response;
 });
 
