@@ -30,8 +30,8 @@ const renderBucketCard = (bucketName, stats) => {
         <div class="bucket-card" data-bucket="${bucketName}">
             <h3>${bucketName}</h3>
             <div class="bucket-stats">
-                <p>Oggetti totali: ${stats.totalObjects}</p>
-                <p>Dimensione totale: ${stats.humanReadableSize}</p>
+                <p>Oggetti totali: ${stats.totalObjects || 0}</p>
+                <p>Dimensione totale: ${stats.humanReadableSize || 0}</p>
             </div>
         </div>
     `;
@@ -58,7 +58,7 @@ const renderObjectsList = (objects) => {
         }">Cancella</button>
                 <button class="action-button download-button" data-key="${obj.key
         }">Scarica</button>
-                ${obj.size === 0 ? `<button class="action-button upload-to-folder-button" data-key="${obj.key}">Carica qui</button>` : ''}
+                ${obj.size === 0 ? `<button class="action-button upload-button upload-to-folder-button" data-key="${obj.key}">Carica qui</button>` : ''}
             </td>
         </tr>
     `
@@ -273,7 +273,9 @@ const handleUploadObject = async (bucketName, folderName = "") => {
   fileInput.type = "file";
   fileInput.onchange = async (event) => {
     const file = event.target.files[0];
-    if (!file) return;
+    if (!file) return UI.showToast("Nessun file selezionato");
+
+    UI.clearErrors();
 
     UI.showLoading();
 
@@ -298,7 +300,7 @@ const handleUploadObject = async (bucketName, folderName = "") => {
 
 const handleCreateFolder = async (bucketName) => {
   const folderName = document.getElementById("folder-name").value;
-  if (!folderName) return;
+  if (!folderName) return UI.showToast("Inserisci un nome per la cartella");
 
   UI.showLoading();
 
@@ -329,8 +331,8 @@ const setupBucketUpdates = () => {
       const statsHtml = `
                 <h3>${bucketName}</h3>
                 <div class="bucket-stats">
-                    <p>Oggetti totali: ${stats.totalObjects}</p>
-                    <p>Dimensione totale: ${stats.humanReadableSize}</p>
+                    <p>Oggetti totali: ${stats.totalObjects || 0}</p>
+                    <p>Dimensione totale: ${stats.humanReadableSize || 0}</p>
                 </div>
             `;
       bucketCard.innerHTML = statsHtml;
